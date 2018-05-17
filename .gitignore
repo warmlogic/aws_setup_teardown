@@ -1,0 +1,11 @@
+_site/
+.sass-cache/
+.jekyll-metadata
+.ipynb_checkpoints/
+data/
+*.pyc
+*.h5
+ai_aliases.sh
+*-commands.txt
+*-remove.sh
+.DS_Store
