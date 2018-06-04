@@ -132,6 +132,6 @@ echo 'fi' >> $instanceName-remove.sh
 
 chmod +x $instanceName-remove.sh
 
-echo All done. Find all you need to connect in $instanceName-commands.txt, $instanceName-export.sh, and aws-alias.sh (run the latter 2 to set environment variables and aliases)
+echo All done. Find all you need to connect in $instanceName-commands.txt, $instanceName-export.sh, and aws-alias.sh (source the latter 2 to set environment variables and aliases)
 echo To remove the stack call $instanceName-remove.sh
 echo 'Connect to your instance: ssh -i $HOME/.ssh/aws-key-'$instanceName'.pem ubuntu@'$instanceUrl
