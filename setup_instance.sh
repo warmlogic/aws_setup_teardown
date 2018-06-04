@@ -80,7 +80,7 @@ aws ec2 reboot-instances --instance-ids $instanceId
 
 # save commands to file
 echo \# Connect to your instance: > $instanceName-commands.txt # overwrite existing file
-echo ssh -i ~/.ssh/aws-key-$instanceName.pem ubuntu@$instanceUrl >> $instanceName-commands.txt
+echo 'ssh -i $HOME/.ssh/aws-key-'$instanceName'.pem ubuntu@'$instanceUrl >> $instanceName-commands.txt
 echo \# Stop your instance: : >> $instanceName-commands.txt
 echo aws ec2 stop-instances --instance-ids $instanceId  >> $instanceName-commands.txt
 echo \# Start your instance: >> $instanceName-commands.txt
@@ -106,26 +106,32 @@ echo export routeTableAssoc=$routeTableAssoc >> $instanceName-export.sh
 chmod +x $instanceName-export.sh
 
 # save delete commands for cleanup
-echo "#!/bin/bash" > $instanceName-remove.sh # overwrite existing file
-echo aws ec2 disassociate-address --association-id $assocId >> $instanceName-remove.sh
-echo aws ec2 release-address --allocation-id $allocAddr >> $instanceName-remove.sh
+echo '#!/bin/bash' > $instanceName-remove.sh # overwrite existing file
+echo 'read -r -p "Removing instance! Are you sure? [y/N] " response' >> $instanceName-remove.sh
+echo 'response=${response,,} # tolower' >> $instanceName-remove.sh
+echo 'if [[ "$response" =~ ^(yes|y)$ ]]' >> $instanceName-remove.sh
+echo 'then' >> $instanceName-remove.sh
+echo '    aws ec2 disassociate-address --association-id' $assocId >> $instanceName-remove.sh
+echo '    aws ec2 release-address --allocation-id' $allocAddr >> $instanceName-remove.sh
 
 # volume gets deleted with the instance automatically
-echo aws ec2 terminate-instances --instance-ids $instanceId >> $instanceName-remove.sh
-echo aws ec2 wait instance-terminated --instance-ids $instanceId >> $instanceName-remove.sh
-echo aws ec2 delete-security-group --group-id $securityGroupId >> $instanceName-remove.sh
+echo '    aws ec2 terminate-instances --instance-ids' $instanceId >> $instanceName-remove.sh
+echo '    aws ec2 wait instance-terminated --instance-ids' $instanceId >> $instanceName-remove.sh
+echo '    aws ec2 delete-security-group --group-id' $securityGroupId >> $instanceName-remove.sh
 
-echo aws ec2 disassociate-route-table --association-id $routeTableAssoc >> $instanceName-remove.sh
-echo aws ec2 delete-route-table --route-table-id $routeTableId >> $instanceName-remove.sh
+echo '    aws ec2 disassociate-route-table --association-id' $routeTableAssoc >> $instanceName-remove.sh
+echo '    aws ec2 delete-route-table --route-table-id' $routeTableId >> $instanceName-remove.sh
 
-echo aws ec2 detach-internet-gateway --internet-gateway-id $internetGatewayId --vpc-id $vpcId >> $instanceName-remove.sh
-echo aws ec2 delete-internet-gateway --internet-gateway-id $internetGatewayId >> $instanceName-remove.sh
-echo aws ec2 delete-subnet --subnet-id $subnetId >> $instanceName-remove.sh
+echo '    aws ec2 detach-internet-gateway --internet-gateway-id' $internetGatewayId '--vpc-id' $vpcId >> $instanceName-remove.sh
+echo '    aws ec2 delete-internet-gateway --internet-gateway-id' $internetGatewayId >> $instanceName-remove.sh
+echo '    aws ec2 delete-subnet --subnet-id' $subnetId >> $instanceName-remove.sh
 
-echo aws ec2 delete-vpc --vpc-id $vpcId >> $instanceName-remove.sh
-echo echo If you want to delete the key-pair, please do it manually. >> $instanceName-remove.sh
+echo '    aws ec2 delete-vpc --vpc-id' $vpcId >> $instanceName-remove.sh
+echo 'echo If you want to delete the key-pair, please do it manually.' >> $instanceName-remove.sh
+echo 'fi' >> $instanceName-remove.sh
 
 chmod +x $instanceName-remove.sh
 
-echo All done. Find all you need to connect in the $instanceName-commands.txt file and to remove the stack call $instanceName-remove.sh
-echo Connect to your instance: ssh -i ~/.ssh/aws-key-$instanceName.pem ubuntu@$instanceUrl
+echo All done. Find all you need to connect in $instanceName-commands.txt, $instanceName-export.sh, and aws-alias.sh (run the latter 2 to set environment variables and aliases)
+echo To remove the stack call $instanceName-remove.sh
+echo 'Connect to your instance: ssh -i $HOME/.ssh/aws-key-'$instanceName'.pem ubuntu@'$instanceUrl
