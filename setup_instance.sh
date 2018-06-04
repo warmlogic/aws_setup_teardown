@@ -88,20 +88,22 @@ echo aws ec2 start-instances --instance-ids $instanceId  >> $instanceName-comman
 echo \# Reboot your instance: >> $instanceName-commands.txt
 echo aws ec2 reboot-instances --instance-ids $instanceId  >> $instanceName-commands.txt
 echo ""
-# export vars to be sure
-echo export instanceId=$instanceId >> $instanceName-commands.txt
-echo export subnetId=$subnetId >> $instanceName-commands.txt
-echo export securityGroupId=$securityGroupId >> $instanceName-commands.txt
-echo export instanceUrl=$instanceUrl >> $instanceName-commands.txt
-echo export instanceIp=$instanceIp >> $instanceName-commands.txt
-echo export routeTableId=$routeTableId >> $instanceName-commands.txt
-echo export instanceName=$instanceName >> $instanceName-commands.txt
-echo export vpcId=$vpcId >> $instanceName-commands.txt
-echo export internetGatewayId=$internetGatewayId >> $instanceName-commands.txt
-echo export subnetId=$subnetId >> $instanceName-commands.txt
-echo export allocAddr=$allocAddr >> $instanceName-commands.txt
-echo export assocId=$assocId >> $instanceName-commands.txt
-echo export routeTableAssoc=$routeTableAssoc >> $instanceName-commands.txt
+# export vars for future usage
+echo export instanceId=$instanceId > $instanceName-export.sh # overwrite existing file
+echo export subnetId=$subnetId >> $instanceName-export.sh
+echo export securityGroupId=$securityGroupId >> $instanceName-export.sh
+echo export instanceUrl=$instanceUrl >> $instanceName-export.sh
+echo export instanceIp=$instanceIp >> $instanceName-export.sh
+echo export routeTableId=$routeTableId >> $instanceName-export.sh
+echo export instanceName=$instanceName >> $instanceName-export.sh
+echo export vpcId=$vpcId >> $instanceName-export.sh
+echo export internetGatewayId=$internetGatewayId >> $instanceName-export.sh
+echo export subnetId=$subnetId >> $instanceName-export.sh
+echo export allocAddr=$allocAddr >> $instanceName-export.sh
+echo export assocId=$assocId >> $instanceName-export.sh
+echo export routeTableAssoc=$routeTableAssoc >> $instanceName-export.sh
+
+chmod +x $instanceName-export.sh
 
 # save delete commands for cleanup
 echo "#!/bin/bash" > $instanceName-remove.sh # overwrite existing file

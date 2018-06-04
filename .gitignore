@@ -7,5 +7,6 @@ data/
 *.h5
 ai_aliases.sh
 *-commands.txt
+*-export.sh
 *-remove.sh
 .DS_Store
