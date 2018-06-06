@@ -90,34 +90,34 @@ export instanceIp=$(aws ec2 describe-instances --instance-ids $instanceId --quer
 aws ec2 reboot-instances --instance-ids $instanceId
 
 # save commands to file
-echo \# Connect to your instance: > $instanceName-commands.txt # overwrite existing file
+echo '# Connect to your instance:' > $instanceName-commands.txt # overwrite existing file
 echo 'ssh -i $HOME/.ssh/aws-key-'$instanceName'.pem ubuntu@'$instanceUrl >> $instanceName-commands.txt
-echo \# Stop your instance: : >> $instanceName-commands.txt
-echo aws ec2 stop-instances --instance-ids $instanceId  >> $instanceName-commands.txt
-echo \# Start your instance: >> $instanceName-commands.txt
-echo aws ec2 start-instances --instance-ids $instanceId  >> $instanceName-commands.txt
-echo \# Reboot your instance: >> $instanceName-commands.txt
-echo aws ec2 reboot-instances --instance-ids $instanceId  >> $instanceName-commands.txt
+echo '# Stop your instance:' : >> $instanceName-commands.txt
+echo 'aws ec2 stop-instances --instance-ids' $instanceId  >> $instanceName-commands.txt
+echo '# Start your instance:' >> $instanceName-commands.txt
+echo 'aws ec2 start-instances --instance-ids' $instanceId  >> $instanceName-commands.txt
+echo '# Reboot your instance:' >> $instanceName-commands.txt
+echo 'aws ec2 reboot-instances --instance-ids' $instanceId  >> $instanceName-commands.txt
 echo ""
 # export vars for future usage
 if [ -n "$AWS_PROFILE" ]; then
-    echo export AWS_PROFILE=$AWS_PROFILE > $instanceName-export.sh # overwrite existing file
+    echo 'export AWS_PROFILE='$AWS_PROFILE';' > $instanceName-export.sh # overwrite existing file
 elif [ -n "$AWS_DEFAULT_PROFILE" ]; then
-    echo export AWS_DEFAULT_PROFILE=$AWS_DEFAULT_PROFILE > $instanceName-export.sh # overwrite existing file
+    echo 'export AWS_DEFAULT_PROFILE='$AWS_DEFAULT_PROFILE';' > $instanceName-export.sh # overwrite existing file
 fi
-echo export instanceId=$instanceId >> $instanceName-export.sh
-echo export subnetId=$subnetId >> $instanceName-export.sh
-echo export securityGroupId=$securityGroupId >> $instanceName-export.sh
-echo export instanceUrl=$instanceUrl >> $instanceName-export.sh
-echo export instanceIp=$instanceIp >> $instanceName-export.sh
-echo export routeTableId=$routeTableId >> $instanceName-export.sh
-echo export instanceName=$instanceName >> $instanceName-export.sh
-echo export vpcId=$vpcId >> $instanceName-export.sh
-echo export internetGatewayId=$internetGatewayId >> $instanceName-export.sh
-echo export subnetId=$subnetId >> $instanceName-export.sh
-echo export allocAddr=$allocAddr >> $instanceName-export.sh
-echo export assocId=$assocId >> $instanceName-export.sh
-echo export routeTableAssoc=$routeTableAssoc >> $instanceName-export.sh
+echo 'export instanceId='$instanceId';' >> $instanceName-export.sh
+echo 'export subnetId='$subnetId';' >> $instanceName-export.sh
+echo 'export securityGroupId='$securityGroupId';' >> $instanceName-export.sh
+echo 'export instanceUrl='$instanceUrl';' >> $instanceName-export.sh
+echo 'export instanceIp='$instanceIp';' >> $instanceName-export.sh
+echo 'export routeTableId='$routeTableId';' >> $instanceName-export.sh
+echo 'export instanceName='$instanceName';' >> $instanceName-export.sh
+echo 'export vpcId='$vpcId';' >> $instanceName-export.sh
+echo 'export internetGatewayId='$internetGatewayId';' >> $instanceName-export.sh
+echo 'export subnetId='$subnetId';' >> $instanceName-export.sh
+echo 'export allocAddr='$allocAddr';' >> $instanceName-export.sh
+echo 'export assocId='$assocId';' >> $instanceName-export.sh
+echo 'export routeTableAssoc='$routeTableAssoc';' >> $instanceName-export.sh
 
 chmod +x $instanceName-export.sh
 
