@@ -71,6 +71,11 @@ export instanceId=$(aws ec2 run-instances --image-id $ami --count 1 --instance-t
 aws ec2 create-tags --resources $instanceId --tags --tags Key=Name,Value=$instanceName
 export allocAddr=$(aws ec2 allocate-address --domain vpc --query 'AllocationId' --output text)
 
+if [ -z "$allocAddr" ] || [ -z "$AWS_DEFAULT_PROFILE" ]; then
+    echo "No address allocated. Check AWS EC2 console to ensure you have not"
+    echo "reached your Elastic IP address limit. Continuing setup..."
+fi
+
 echo Waiting for instance start...
 aws ec2 wait instance-running --instance-ids $instanceId
 sleep 10 # wait for ssh service to start running too
@@ -139,6 +144,7 @@ echo '    aws ec2 delete-subnet --subnet-id' $subnetId >> $instanceName-remove.s
 
 echo '    aws ec2 delete-vpc --vpc-id' $vpcId >> $instanceName-remove.sh
 echo '    echo If you want to delete the key-pair, please do it manually.' >> $instanceName-remove.sh
+echo '    echo Remember to ensure the Elastic IP address was released, by checking the AWS EC2 dashboard.' >> $instanceName-remove.sh
 echo 'fi' >> $instanceName-remove.sh
 
 chmod +x $instanceName-remove.sh
