@@ -2,6 +2,8 @@
 
 # Configure an AWS EC2 instance
 
+# example usage: ./setup_ec2_instance.sh t2.micro MY_INSTANCE_NAME
+
 # get the correct ami
 # https://gist.github.com/vancluever/7676b4dafa97826ef0e9
 export ami=`aws ec2 describe-images \
