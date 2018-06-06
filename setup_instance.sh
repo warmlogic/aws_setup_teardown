@@ -1,14 +1,20 @@
 #!/bin/bash
-#
-# This script should be invoked via setup_t2.sh or setup_p2.sh; those scripts
+
+# This script should be invoked via setup_ec2_instance.sh; that script
 # will export the right environment variables for this to succeed.
 
 # uncomment for debugging
 # set -x
 
+if [ -z "$AWS_PROFILE" ] || [ -z "$AWS_DEFAULT_PROFILE" ]; then
+    echo "Missing \$AWS_PROFILE or \$AWS_DEFAULT_PROFILE; export before"
+    echo "running this script!"
+    exit 1
+fi
+
 if [ -z "$ami" ] || [ -z "$instanceType" ]; then
     echo "Missing \$ami or \$instanceType; this script should be called from"
-    echo "setup_t2.sh or setup_p2.sh!"
+    echo "setup_ec2_instance.sh!"
     exit 1
 fi
 
@@ -89,7 +95,12 @@ echo \# Reboot your instance: >> $instanceName-commands.txt
 echo aws ec2 reboot-instances --instance-ids $instanceId  >> $instanceName-commands.txt
 echo ""
 # export vars for future usage
-echo export instanceId=$instanceId > $instanceName-export.sh # overwrite existing file
+if [ -n "$AWS_PROFILE" ]; then
+    echo export AWS_PROFILE=$AWS_PROFILE > $instanceName-export.sh # overwrite existing file
+elif [ -n "$AWS_DEFAULT_PROFILE" ]; then
+    echo export AWS_DEFAULT_PROFILE=$AWS_DEFAULT_PROFILE > $instanceName-export.sh # overwrite existing file
+fi
+echo export instanceId=$instanceId >> $instanceName-export.sh
 echo export subnetId=$subnetId >> $instanceName-export.sh
 echo export securityGroupId=$securityGroupId >> $instanceName-export.sh
 echo export instanceUrl=$instanceUrl >> $instanceName-export.sh
