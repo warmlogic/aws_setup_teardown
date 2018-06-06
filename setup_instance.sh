@@ -119,7 +119,7 @@ chmod +x $instanceName-export.sh
 # save delete commands for cleanup
 echo '#!/bin/bash' > $instanceName-remove.sh # overwrite existing file
 echo 'read -r -p "Removing instance! Are you sure? [y/N] " response' >> $instanceName-remove.sh
-echo 'response=${response,,} # tolower' >> $instanceName-remove.sh
+echo $'response=$(echo "$response" | tr '[:upper:]' '[:lower:]')' >> $instanceName-remove.sh
 echo 'if [[ "$response" =~ ^(yes|y)$ ]]' >> $instanceName-remove.sh
 echo 'then' >> $instanceName-remove.sh
 echo '    aws ec2 disassociate-address --association-id' $assocId >> $instanceName-remove.sh
@@ -138,7 +138,7 @@ echo '    aws ec2 delete-internet-gateway --internet-gateway-id' $internetGatewa
 echo '    aws ec2 delete-subnet --subnet-id' $subnetId >> $instanceName-remove.sh
 
 echo '    aws ec2 delete-vpc --vpc-id' $vpcId >> $instanceName-remove.sh
-echo 'echo If you want to delete the key-pair, please do it manually.' >> $instanceName-remove.sh
+echo '    echo If you want to delete the key-pair, please do it manually.' >> $instanceName-remove.sh
 echo 'fi' >> $instanceName-remove.sh
 
 chmod +x $instanceName-remove.sh
