@@ -6,7 +6,7 @@
 # uncomment for debugging
 # set -x
 
-if [ -z "$AWS_PROFILE" ] || [ -z "$AWS_DEFAULT_PROFILE" ]; then
+if [ -z "$AWS_PROFILE" ] && [ -z "$AWS_DEFAULT_PROFILE" ]; then
     echo "Missing \$AWS_PROFILE or \$AWS_DEFAULT_PROFILE; export before"
     echo "running this script!"
     exit 1
