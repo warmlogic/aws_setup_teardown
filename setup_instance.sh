@@ -56,13 +56,11 @@ aws ec2 authorize-security-group-ingress --group-id $securityGroupId --protocol 
 # jupyter notebook
 aws ec2 authorize-security-group-ingress --group-id $securityGroupId --protocol tcp --port 8888-8898 --cidr $cidr
 
-if [ ! -d ~/.ssh ]
-then
+if [ ! -d ~/.ssh ]; then
 	mkdir ~/.ssh
 fi
 
-if [ ! -f ~/.ssh/aws-key-$instanceName.pem ]
-then
+if [ ! -f ~/.ssh/aws-key-$instanceName.pem ]; then
 	aws ec2 create-key-pair --key-name aws-key-$instanceName --query 'KeyMaterial' --output text > ~/.ssh/aws-key-$instanceName.pem
 	chmod 400 ~/.ssh/aws-key-$instanceName.pem
 fi
