@@ -18,8 +18,8 @@ if [ -z "$ami" ]; then
     exit 1
 fi
 
-if [ -z "$instanceType" ]; then
-    echo "Missing \$instanceType; this script should be called from"
+if [ -z "$volumeSize" ]; then
+    echo "Missing \$volumeSize; this script should be called from"
     echo "setup_ec2_instance.sh!"
     exit 1
 fi
@@ -30,17 +30,24 @@ if [ -z "$instanceName" ]; then
     exit 1
 fi
 
+if [ -z "$instanceType" ]; then
+    echo "Missing \$instanceType; this script should be called from"
+    echo "setup_ec2_instance.sh!"
+    exit 1
+fi
+
 # settings
 export cidr="0.0.0.0/0"
+export volumeType="gp2"
 
 hash aws 2>/dev/null
 if [ $? -ne 0 ]; then
-    echo >&2 "'aws' command line tool required, but not installed.  Aborting."
+    echo >&2 "'aws' command line tool required, but not installed. Aborting."
     exit 1
 fi
 
 if [ -z "$(aws configure get aws_access_key_id)" ]; then
-    echo "AWS credentials not configured.  Aborting"
+    echo "AWS credentials not configured. Aborting"
     exit 1
 fi
 
@@ -76,16 +83,16 @@ if [ ! -f ~/.ssh/aws-key-$instanceName.pem ]; then
 	chmod 400 ~/.ssh/aws-key-$instanceName.pem
 fi
 
-export instanceId=$(aws ec2 run-instances --image-id $ami --count 1 --instance-type $instanceType --key-name aws-key-$instanceName --security-group-ids $securityGroupId --subnet-id $subnetId --associate-public-ip-address --block-device-mapping "[ { \"DeviceName\": \"/dev/sda1\", \"Ebs\": { \"VolumeSize\": 128, \"VolumeType\": \"gp2\" } } ]" --query 'Instances[0].InstanceId' --output text)
+export instanceId=$(aws ec2 run-instances --image-id $ami --count 1 --instance-type $instanceType --key-name aws-key-$instanceName --security-group-ids $securityGroupId --subnet-id $subnetId --associate-public-ip-address --block-device-mapping "[ { \"DeviceName\": \"/dev/sda1\", \"Ebs\": { \"VolumeSize\": $volumeSize, \"VolumeType\": \"$volumeType\" } } ]" --query 'Instances[0].InstanceId' --output text)
 aws ec2 create-tags --resources $instanceId --tags --tags Key=Name,Value=$instanceName
 export allocAddr=$(aws ec2 allocate-address --domain vpc --query 'AllocationId' --output text)
 
-if [ -z "$allocAddr" ] || [ -z "$AWS_DEFAULT_PROFILE" ]; then
+if [ -z "$allocAddr" ]; then
     echo "No address allocated. Check AWS EC2 console to ensure you have not"
     echo "reached your Elastic IP address limit. Continuing setup..."
 fi
 
-echo Waiting for instance start...
+echo "Waiting for instance start..."
 aws ec2 wait instance-running --instance-ids $instanceId
 sleep 10 # wait for ssh service to start running too
 export assocId=$(aws ec2 associate-address --instance-id $instanceId --allocation-id $allocAddr --query 'AssociationId' --output text)
