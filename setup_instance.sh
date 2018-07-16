@@ -12,14 +12,25 @@ if [ -z "$AWS_PROFILE" ] && [ -z "$AWS_DEFAULT_PROFILE" ]; then
     exit 1
 fi
 
-if [ -z "$ami" ] || [ -z "$instanceType" ]; then
-    echo "Missing \$ami or \$instanceType; this script should be called from"
+if [ -z "$ami" ]; then
+    echo "Missing \$ami; this script should be called from"
+    echo "setup_ec2_instance.sh!"
+    exit 1
+fi
+
+if [ -z "$instanceType" ]; then
+    echo "Missing \$instanceType; this script should be called from"
+    echo "setup_ec2_instance.sh!"
+    exit 1
+fi
+
+if [ -z "$instanceName" ]; then
+    echo "Missing \$instanceName; this script should be called from"
     echo "setup_ec2_instance.sh!"
     exit 1
 fi
 
 # settings
-export instanceName="$1"
 export cidr="0.0.0.0/0"
 
 hash aws 2>/dev/null
