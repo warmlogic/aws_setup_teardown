@@ -134,8 +134,7 @@ chmod +x $instanceName-export.sh
 echo '#!/bin/bash' > $instanceName-remove.sh # overwrite existing file
 echo 'read -r -p "Removing instance! Are you sure? [y/N] " response' >> $instanceName-remove.sh
 echo $'response=$(echo "$response" | tr '[:upper:]' '[:lower:]')' >> $instanceName-remove.sh
-echo 'if [[ "$response" =~ ^(yes|y)$ ]]' >> $instanceName-remove.sh
-echo 'then' >> $instanceName-remove.sh
+echo 'if [[ "$response" =~ ^(yes|y)$ ]]; then' >> $instanceName-remove.sh
 echo '    aws ec2 disassociate-address --association-id' $assocId >> $instanceName-remove.sh
 echo '    aws ec2 release-address --allocation-id' $allocAddr >> $instanceName-remove.sh
 
@@ -154,6 +153,8 @@ echo '    aws ec2 delete-subnet --subnet-id' $subnetId >> $instanceName-remove.s
 echo '    aws ec2 delete-vpc --vpc-id' $vpcId >> $instanceName-remove.sh
 echo '    echo If you want to delete the key-pair, please do it manually.' >> $instanceName-remove.sh
 echo '    echo Remember to ensure the Elastic IP address was released, by checking the AWS EC2 dashboard.' >> $instanceName-remove.sh
+echo 'else' >> $instanceName-remove.sh
+echo '    echo "Removal cancelled."' >> $instanceName-remove.sh
 echo 'fi' >> $instanceName-remove.sh
 
 chmod +x $instanceName-remove.sh
