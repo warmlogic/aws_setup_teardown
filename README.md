@@ -37,7 +37,7 @@ This includes installing my dotfiles, appropriate Linux packages, a conda Python
     1. `./01-bootstrap.sh`
     1. `./03-ubuntu.sh`
     1. `./04-python.sh`
-1. Edit `~/.exports` as necessary (e.g., for `ANSARO_REPO_ROOT`)
+1. Edit `~/.exports` as necessary
 1. `source ~/.bashrc`
 1. Configure `awscli` (for S3, etc. access): `aws configure --profile my-profile-name`
 
@@ -48,10 +48,10 @@ This includes installing my dotfiles, appropriate Linux packages, a conda Python
     1. `./jupyter_userdata.sh`
     1. Enter desired password
 1. Go to the home directory: `cd`
-1. Start a tmux session: `tmux new -s jupyter`
+1. Start a `tmux` session: `tmux new -s jupyter`
 1. Start a Jupyter Notebook server: `nb-server`
-1. Detach from the tmux session: `C-b d`
-1. Reattach to the tmux session: `tmux a -t jupyter`
+1. Detach from the `tmux` session: `C-b d`
+1. Reattach to the `tmux` session: `tmux a -t jupyter`
 
 ### Access the Jupyter Notebook server on your local machine
 
