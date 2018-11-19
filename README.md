@@ -37,6 +37,7 @@ This includes installing my dotfiles, appropriate Linux packages, a conda Python
     1. `./01-bootstrap.sh`
     1. `./03-ubuntu.sh`
     1. `./04-python.sh`
+1. If desired, `cp .extra ~/.extra` and edit
 1. Edit `~/.exports` as necessary
 1. `source ~/.bashrc`
 1. Configure `awscli` (for S3, etc. access): `aws configure --profile my-profile-name`
